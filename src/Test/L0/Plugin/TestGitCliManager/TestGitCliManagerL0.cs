@@ -15,7 +15,7 @@ namespace Test.L0.Plugin.TestGitCliManager
         private readonly string gitPath = Path.Combine("agenthomedirectory", "externals", "git", "cmd", "git.exe");
         private readonly string ffGitPath = Path.Combine("agenthomedirectory", "externals", "ff_git", "cmd", "git.exe");
 
-        private Tuple<Mock<ArgUtilInstanced>, MockAgentTaskPluginExecutionContext> SetupMocksForGitLfsFetchTests(TestHostContext hostContext)
+        private Tuple<Mock<ArgUtilInstanced>, MockAgentTaskPluginExecutionContext> setupMocksForGitLfsFetchTests(TestHostContext hostContext)
         {
             Mock<ArgUtilInstanced> argUtilInstanced = new Mock<ArgUtilInstanced>()
             {
@@ -33,25 +33,42 @@ namespace Test.L0.Plugin.TestGitCliManager
             return Tuple.Create(argUtilInstanced, context);
         }
 
-        [Fact]
+        public static IEnumerable<object[]> UseNewGitVersionFeatureFlagsData => new List<object[]>
+        {
+            new object[] { true },
+            new object[] { false },
+        };
+
+        [Theory]
         [Trait("Level", "L0")]
         [Trait("Category", "Plugin")]
         [Trait("SkipOn", "darwin")]
         [Trait("SkipOn", "linux")]
-        public void TestGetInternalGitPaths()
+        [MemberData(nameof(UseNewGitVersionFeatureFlagsData))]
+        public void TestGetInternalGitPaths(bool gitFeatureFlagStatus)
         {
-            using var hostContext = new TestHostContext(this);
+            using var hostContext = new TestHostContext(this, $"GitFeatureFlagStatus_{gitFeatureFlagStatus}");
 
             // Setup
             var originalArgUtilInstance = ArgUtil.ArgUtilInstance;
-            var mocks = SetupMocksForGitLfsFetchTests(hostContext);
+            var mocks = setupMocksForGitLfsFetchTests(hostContext);
             var argUtilInstanced = mocks.Item1;
             var mockAgentTaskPluginExecutionContext = mocks.Item2;
 
             ArgUtil.ArgUtilInstance = argUtilInstanced.Object;
             MockGitCliManager gitCliManagerMock = new();
-            var (resolvedGitPath, resolvedGitLfsPath) = gitCliManagerMock.GetInternalGitPaths(mockAgentTaskPluginExecutionContext);
-            Assert.Equal(resolvedGitPath, gitPath);
+            var (resolvedGitPath, resolvedGitLfsPath) = gitCliManagerMock.GetInternalGitPaths(
+                mockAgentTaskPluginExecutionContext,
+                gitFeatureFlagStatus);
+
+            if (gitFeatureFlagStatus)
+            {
+                Assert.Equal(resolvedGitPath, ffGitPath);
+            }
+            else
+            {
+                Assert.Equal(resolvedGitPath, gitPath);
+            }
         }
 
         [Fact]
@@ -62,7 +79,7 @@ namespace Test.L0.Plugin.TestGitCliManager
             using var hostContext = new TestHostContext(this);
             // Setup
             var originalArgUtilInstance = ArgUtil.ArgUtilInstance;
-            var mocks = SetupMocksForGitLfsFetchTests(hostContext);
+            var mocks = setupMocksForGitLfsFetchTests(hostContext);
             var argUtilInstanced = mocks.Item1;
             var mockAgentTaskPluginExecutionContext = mocks.Item2;
 

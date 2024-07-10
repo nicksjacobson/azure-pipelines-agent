@@ -68,6 +68,9 @@ parameters:
   type: boolean
   default: false
 
+- name: justificationForDisablingSdl
+  type: string
+  default: ''
 
 jobs:
 
@@ -85,7 +88,7 @@ jobs:
         codeql:
           compiled:
             enabled: false
-            justificationForDisabling: "CodeQL conflicting with signing on osx (see ICM 520690622)"
+            justificationForDisabling: ${{ parameters.justificationForDisablingSdl}}
   variables:
     PACKAGE_TYPE: ${{ parameters.packageType }}
     ${{ if eq(parameters.os, 'win') }}:

@@ -294,7 +294,7 @@ extends:
       - ${{ if parameters.macOS_arm64 }}:
         - template: /.azure-pipelines/build-jobs.yml@self
           parameters:
-             codeql:
+            codeql:
               compiled:
                 enabled: false
                 justificationForDisabling: "CodeQL conflicting with signing on osx (see ICM 520690622)"

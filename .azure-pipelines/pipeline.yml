@@ -271,7 +271,7 @@ extends:
       - ${{ if parameters.macOS_x64 }}:
         - template: /.azure-pipelines/build-jobs.yml@self
           parameters:
-            sdl:
+            enforcedSdl:
               codeql:
                 compiled:
                   enabled: false
@@ -295,7 +295,7 @@ extends:
       - ${{ if parameters.macOS_arm64 }}:
         - template: /.azure-pipelines/build-jobs.yml@self
           parameters:
-            sdl:
+            enforcedSdl:
               codeql:
                 compiled:
                   enabled: false

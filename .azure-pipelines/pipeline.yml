@@ -298,7 +298,6 @@ extends:
               compiled:
                 enabled: false
                 justificationForDisabling: "CodeQL conflicting with signing on osx (see ICM 520690622)"
-            jobName: build_osx
             jobName: build_osx_arm64
             displayName: macOS (ARM64)
             pool:

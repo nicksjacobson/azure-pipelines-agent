@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Management;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -31,7 +32,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker
         #region MonitorProperties
         private IExecutionContext _context;
 
-        private const int METRICS_UPDATE_INTERVAL = 5000;
+        private const int METRICS_UPDATE_INTERVAL = 1000;
         private const int ACTIVE_MODE_INTERVAL = 5000;
         private const int WARNING_MESSAGE_INTERVAL = 5000;
         private const int AVAILABLE_DISK_SPACE_PERCENTAGE_THRESHOLD = 5;
@@ -52,6 +53,8 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker
         {
             public DateTime Updated;
             public double Usage;
+            public double previousIdle;
+            public double previousTotal;
         }
 
         private struct DiskInfo
@@ -153,37 +156,22 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker
                     _context.CancellationToken,
                     timeoutTokenSource.Token);
 
-                processInvoker.OutputDataReceived += delegate (object sender, ProcessDataReceivedEventArgs message)
+                await Task.Run(() =>
                 {
-                    var processInvokerOutput = message.Data;
-
-                    var cpuInfoNice = int.Parse(processInvokerOutput.Split(' ', (char)StringSplitOptions.RemoveEmptyEntries)[2]);
-                    var cpuInfoIdle = int.Parse(processInvokerOutput.Split(' ', (char)StringSplitOptions.RemoveEmptyEntries)[4]);
-                    var cpuInfoIOWait = int.Parse(processInvokerOutput.Split(' ', (char)StringSplitOptions.RemoveEmptyEntries)[5]);
+                    using var fs = new FileStream("/proc/stat", FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
+                    using var sr = new StreamReader(fs, Encoding.UTF8);
+                    var cpuValues = sr.ReadLine().Split(' ', StringSplitOptions.RemoveEmptyEntries).Skip(1).Select(double.Parse).ToArray();
+                    var idle = cpuValues[3];
+                    var total = cpuValues.Sum();
 
                     lock (_cpuInfoLock)
                     {
                         _cpuInfo.Updated = DateTime.Now;
-                        _cpuInfo.Usage = (double)(cpuInfoNice + cpuInfoIdle) * 100 / (cpuInfoNice + cpuInfoIdle + cpuInfoIOWait);
+                        _cpuInfo.Usage = 100.0 * (1.0 - ((idle - _cpuInfo.previousIdle) / (total - _cpuInfo.previousTotal)));
+                        _cpuInfo.previousIdle = idle;
+                        _cpuInfo.previousTotal = total;
                     }
-                };
-
-                processInvoker.ErrorDataReceived += delegate (object sender, ProcessDataReceivedEventArgs message)
-                {
-                    Trace.Error($"Error on receiving CPU info: {message.Data}");
-                };
-
-                var filePath = "grep";
-                var arguments = "\"cpu \" /proc/stat";
-                await processInvoker.ExecuteAsync(
-                        workingDirectory: string.Empty,
-                        fileName: filePath,
-                        arguments: arguments,
-                        environment: null,
-                        requireExitCodeZero: true,
-                        outputEncoding: null,
-                        killProcessOnCancel: true,
-                        cancellationToken: linkedTokenSource.Token);
+                }, linkedTokenSource.Token);
             }
 
             if (PlatformUtil.RunningOnMacOS)

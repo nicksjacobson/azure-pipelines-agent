@@ -32,7 +32,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Worker
         #region MonitorProperties
         private IExecutionContext _context;
 
-        private const int METRICS_UPDATE_INTERVAL = 1000;
+        private const int METRICS_UPDATE_INTERVAL = 5000;
         private const int ACTIVE_MODE_INTERVAL = 5000;
         private const int WARNING_MESSAGE_INTERVAL = 5000;
         private const int AVAILABLE_DISK_SPACE_PERCENTAGE_THRESHOLD = 5;

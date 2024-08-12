@@ -21,7 +21,7 @@ source "$SCRIPT_DIR/.helpers.sh"
 
 REPO_ROOT="${SCRIPT_DIR}/.."
 DOTNETSDK_ROOT="${REPO_ROOT}/_dotnetsdk"
-DOTNETSDK_VERSION="6.0.424"
+DOTNETSDK_VERSION="8.0.303"
 DOTNETSDK_INSTALLDIR="$DOTNETSDK_ROOT/$DOTNETSDK_VERSION"
 AGENT_VERSION=$(cat "$SCRIPT_DIR/agentversion" | head -n 1 | tr -d "\n\r")
 
@@ -126,10 +126,14 @@ function cmd_layout ()
 
     #change execution flag to allow running with sudo
     if [[ ("$CURRENT_PLATFORM" == "linux") || ("$CURRENT_PLATFORM" == "darwin") ]]; then
-        chmod +x "${LAYOUT_DIR}/bin/Agent.Listener"
-        chmod +x "${LAYOUT_DIR}/bin/Agent.Worker"
-        chmod +x "${LAYOUT_DIR}/bin/Agent.PluginHost"
-        chmod +x "${LAYOUT_DIR}/bin/installdependencies.sh"
+        chmod +x "${LAYOUT_DIR}/net6/bin/Agent.Listener"
+        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.Listener"
+        chmod +x "${LAYOUT_DIR}/net6/bin/Agent.Worker"
+        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.Worker"
+        chmod +x "${LAYOUT_DIR}/net6/bin/Agent.PluginHost"
+        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.PluginHost"
+        chmod +x "${LAYOUT_DIR}/net6/bin/installdependencies.sh"
+        chmod +x "${LAYOUT_DIR}/net8/bin/installdependencies.sh"
     fi
 
     heading "Setup externals folder for $RUNTIME_ID agent's layout"

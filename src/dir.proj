@@ -73,14 +73,14 @@
              Projects="@(ProjectFiles)"
              SkipNonExistentProjects="false"
              StopOnFirstFailure="true"
-             Properties="Configuration=$(BUILDCONFIG);PackageRuntime=$(PackageRuntime);Version=$(AgentVersion);RuntimeIdentifier=$(PackageRuntime);PublishDir=$(LayoutRoot)/net6/bin/;TreatWarningsAsErrors=$(TreatWarningsAsErrors);TargetFramework=net6" />
+             Properties="Configuration=$(BUILDCONFIG);PackageRuntime=$(PackageRuntime);Version=$(AgentVersion);RuntimeIdentifier=$(PackageRuntime);PublishDir=$(LayoutRoot)/net6/bin/;TreatWarningsAsErrors=$(TreatWarningsAsErrors);TargetFramework=net6.0" />
 
     <MSBuild Targets="Publish"
              BuildInParallel="false"
              Projects="@(ProjectFiles)"
              SkipNonExistentProjects="false"
              StopOnFirstFailure="true"
-             Properties="Configuration=$(BUILDCONFIG);PackageRuntime=$(PackageRuntime);Version=$(AgentVersion);RuntimeIdentifier=$(PackageRuntime);PublishDir=$(LayoutRoot)/net8/bin/;TreatWarningsAsErrors=$(TreatWarningsAsErrors);TargetFramework=net8" />
+             Properties="Configuration=$(BUILDCONFIG);PackageRuntime=$(PackageRuntime);Version=$(AgentVersion);RuntimeIdentifier=$(PackageRuntime);PublishDir=$(LayoutRoot)/net8/bin/;TreatWarningsAsErrors=$(TreatWarningsAsErrors);TargetFramework=net8.0" />
 
     <Exec Command="%22$(DesktopMSBuild)%22 Agent.Service/Windows/AgentService.csproj /p:Configuration=$(BUILDCONFIG) /p:OutputPath=%22$(LayoutRoot)/AgentService/%22 /p:TreatWarningsAsErrors=$(TreatWarningsAsErrors)" ConsoleToMSBuild="true" Condition="'$(PackageRuntime)' == 'win-x64' Or '$(PackageRuntime)' == 'win-x86'" />
    

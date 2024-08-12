@@ -106,9 +106,9 @@ function make_build (){
          || failed build
     fi
 
-    mkdir -p "${LAYOUT_DIR}/bin/en-US"
+    mkdir -p "${LAYOUT_DIR}/net6/bin/en-US" "${LAYOUT_DIR}/net8/bin/en-US"
 
-    grep -v '^ *"CLI-WIDTH-' ./Misc/layoutbin/en-US/strings.json > "${LAYOUT_DIR}/bin/en-US/strings.json"
+    grep -v '^ *"CLI-WIDTH-' ./Misc/layoutbin/en-US/strings.json | tee "${LAYOUT_DIR}/net6/bin/en-US/strings.json" > "${LAYOUT_DIR}/net8/bin/en-US/strings.json"
 }
 
 function cmd_build ()
@@ -127,17 +127,22 @@ function cmd_layout ()
     #change execution flag to allow running with sudo
     if [[ ("$CURRENT_PLATFORM" == "linux") || ("$CURRENT_PLATFORM" == "darwin") ]]; then
         chmod +x "${LAYOUT_DIR}/net6/bin/Agent.Listener"
-        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.Listener"
         chmod +x "${LAYOUT_DIR}/net6/bin/Agent.Worker"
-        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.Worker"
         chmod +x "${LAYOUT_DIR}/net6/bin/Agent.PluginHost"
-        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.PluginHost"
         chmod +x "${LAYOUT_DIR}/net6/bin/installdependencies.sh"
+
+        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.Listener"
+        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.Worker"
+        chmod +x "${LAYOUT_DIR}/net8/bin/Agent.PluginHost"
         chmod +x "${LAYOUT_DIR}/net8/bin/installdependencies.sh"
     fi
 
     heading "Setup externals folder for $RUNTIME_ID agent's layout"
-    bash ./Misc/externals.sh $RUNTIME_ID || checkRC externals.sh
+    
+    bash ./Misc/externals.sh $RUNTIME_ID "" "_layout/${RUNTIME_ID}" || checkRC externals.sh
+
+    cp -r "${LAYOUT_DIR}/externals" "${LAYOUT_DIR}/net6"
+    mv "${LAYOUT_DIR}/externals" "${LAYOUT_DIR}/net8"
 }
 
 function cmd_test_l0 ()

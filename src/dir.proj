@@ -89,8 +89,8 @@
       <AgentServiceFiles Include="$(LayoutRoot)/AgentService/**"/>
     </ItemGroup>
 
-    <Copy SourceFiles="@(AgentServiceFiles)" DestinationFolder="$(LayoutRoot)/net6/bin/"/>
-    <Move SourceFiles="@(AgentServiceFiles)" DestinationFolder="$(LayoutRoot)/net8/bin/"/>
+    <Copy SourceFiles="@(AgentServiceFiles)" DestinationFolder="$(LayoutRoot)/net6/bin/%(RecursiveDir)"/>
+    <Move SourceFiles="@(AgentServiceFiles)" DestinationFolder="$(LayoutRoot)/net8/bin/%(RecursiveDir)"/>
     <RemoveDir Directories="$(LayoutRoot)/AgentService" />
   </Target>
 

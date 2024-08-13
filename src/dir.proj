@@ -124,8 +124,9 @@
 
   <Target Name="Layout" DependsOnTargets="Clean;Build">
     <Copy SourceFiles="@(LayoutRootFiles)"  DestinationFolder="$(LayoutRoot)/net6/%(RecursiveDir)"/>
-    <Copy SourceFiles="@(LayoutRootFiles)"  DestinationFolder="$(LayoutRoot)/net8/%(RecursiveDir)"/>
     <Copy SourceFiles="@(LayoutBinFiles)"  DestinationFolder="$(LayoutRoot)/net6/bin/%(RecursiveDir)"/>
+    
+    <Copy SourceFiles="@(LayoutRootFiles)"  DestinationFolder="$(LayoutRoot)/net8/%(RecursiveDir)"/>
     <Copy SourceFiles="@(LayoutBinFiles)"  DestinationFolder="$(LayoutRoot)/net8/bin/%(RecursiveDir)"/>
 
     <ItemGroup>

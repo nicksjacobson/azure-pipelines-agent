@@ -168,6 +168,10 @@ function cmd_test_l1 ()
 
     heading "Setup externals folder for $RUNTIME_ID agent's layout"
     bash ./Misc/externals.sh $RUNTIME_ID "" "_l1" "true" || checkRC externals.sh
+    
+    mkdir ../_l1/net6 ../_l1/net8
+    cp -r "../_l1/externals" "../_l1/net6/externals"
+    mv "../_l1/externals" "../_l1/net8"
 
     heading "Testing L1"
 

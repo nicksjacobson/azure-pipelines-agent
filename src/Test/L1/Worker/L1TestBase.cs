@@ -33,6 +33,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Tests.L1.Worker
 
     public class L1TestBase : IDisposable
     {
+        private static readonly string NetVersionFolder = "net" + $"{Environment.Version.Major}";
         protected TimeSpan ChannelTimeout = TimeSpan.FromSeconds(100);
         protected TimeSpan JobTimeout = TimeSpan.FromSeconds(100);
 
@@ -278,7 +279,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Tests.L1.Worker
             var testName = testMethod.Replace(".", "_");
 
             return Path.Combine(
-               Path.Combine(TestUtil.GetSrcPath(), "Test", "TestLogs"),
+               Path.Combine(TestUtil.GetSrcPath(), "Test", "TestLogs", NetVersionFolder),
                $"trace_{suiteName}_{testName}.log");
         }
 

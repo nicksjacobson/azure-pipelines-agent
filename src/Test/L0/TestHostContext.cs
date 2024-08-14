@@ -24,7 +24,6 @@ namespace Microsoft.VisualStudio.Services.Agent.Tests
     public sealed class TestHostContext : IHostContext, IDisposable
     {
         private static readonly string NetVersionFolder = "net" + $"{Environment.Version.Major}";
-
         private readonly ConcurrentDictionary<Type, ConcurrentQueue<object>> _serviceInstances = new ConcurrentDictionary<Type, ConcurrentQueue<object>>();
         private readonly ConcurrentDictionary<Type, object> _serviceSingletons = new ConcurrentDictionary<Type, object>();
         private readonly ITraceManager _traceManager;

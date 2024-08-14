@@ -18,10 +18,5 @@ namespace Microsoft.VisualStudio.Services.Agent.Listener
             : base(message, ex)
         {
         }
-
-        protected VerificationException(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
     }
 }

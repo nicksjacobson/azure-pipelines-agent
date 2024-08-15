@@ -592,6 +592,12 @@ namespace Agent.Sdk.Knob
             new EnvironmentKnobSource("AGENT_DISABLE_DRAIN_QUEUES_AFTER_TASK"),
             new BuiltInDefaultKnobSource("false"));
 
+        public static readonly Knob EnableResourceMonitorDebugOutput = new Knob(
+            nameof(EnableResourceMonitorDebugOutput),
+            "If true, the agent will show the resource monitor output for debug runs",
+            new RuntimeKnobSource("AZP_ENABLE_RESOURCE_MONITOR_DEBUG_OUTPUT"),
+            new EnvironmentKnobSource("AZP_ENABLE_RESOURCE_MONITOR_DEBUG_OUTPUT"),
+            new BuiltInDefaultKnobSource("false"));
 
         public static readonly Knob EnableResourceUtilizationWarnings = new Knob(
             nameof(EnableResourceUtilizationWarnings),
@@ -652,6 +658,13 @@ namespace Agent.Sdk.Knob
             "If true, the agent will check in the 'Initialize job' step each task used in the job if this task has node handlers, and all of them are deprecated.",
             new RuntimeKnobSource("AZP_AGENT_CHECK_IF_TASK_NODE_RUNNER_IS_DEPRECATED"),
             new PipelineFeatureSource("CheckIfTaskNodeRunnerIsDeprecated"),
+            new BuiltInDefaultKnobSource("false"));
+
+        public static readonly Knob UseNode20ToStartContainer = new Knob(
+            nameof(UseNode20ToStartContainer),
+            "If true, the agent will use Node 20 to start docker container when executing container job and the container platform is the same as the host platform.",
+            new RuntimeKnobSource("AZP_AGENT_USE_NODE20_TO_START_CONTAINER"),
+            new PipelineFeatureSource("UseNode20ToStartContainer"),
             new BuiltInDefaultKnobSource("false"));
 
         public static readonly Knob EnableNewSecretMasker = new Knob(
@@ -731,5 +744,11 @@ namespace Agent.Sdk.Knob
             "Show warning message on the OS which is not supported by .NET 8",
             new PipelineFeatureSource("Net8UnsupportedOsWarning"),
             new BuiltInDefaultKnobSource("true"));
+
+        public static readonly Knob UsePSScriptWrapper = new Knob(
+            nameof(UsePSScriptWrapper),
+            "Use PowerShell script wrapper to handle PowerShell ConstrainedLanguage mode.",
+            new PipelineFeatureSource("UsePSScriptWrapper"),
+            new BuiltInDefaultKnobSource("false"));
     }
 }

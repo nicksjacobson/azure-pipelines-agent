@@ -278,8 +278,7 @@ namespace Microsoft.VisualStudio.Services.Agent.Tests.L1.Worker
                 startIndex: typeof(Tests.TestHostContext).FullName.LastIndexOf(nameof(TestHostContext)));
             var testName = testMethod.Replace(".", "_");
 
-            return Path.Combine(
-               Path.Combine(TestUtil.GetSrcPath(), "Test", "TestLogs", NetVersionFolder),
+            return Path.Combine(TestUtil.GetSrcPath(), "Test", "TestLogs", NetVersionFolder,
                $"trace_{suiteName}_{testName}.log");
         }
 

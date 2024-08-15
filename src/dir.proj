@@ -129,6 +129,8 @@
 
     <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false -o $(L1Root)/net6/bin -f net6.0" ConsoleToMSBuild="true" />
     <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false -o $(L1Root)/net8/bin -f net8.0" ConsoleToMSBuild="true" />
+    
+    <Exec Command="dotnet build Test/Test.csproj /t:CopyFilesL1" Condition="'$(PackageRuntime)' == 'win-x86'"/>
 
     <Exec Command="dotnet test Test/Test.csproj -o $(L1Root)/net6/bin --no-build --logger:trx --verbosity=detailed --filter &quot;$(TestFilters)&quot;" ConsoleToMSBuild="true" />
     <Exec Command="dotnet test Test/Test.csproj -o $(L1Root)/net8/bin --no-build --logger:trx --verbosity=detailed --filter &quot;$(TestFilters)&quot;" ConsoleToMSBuild="true" />

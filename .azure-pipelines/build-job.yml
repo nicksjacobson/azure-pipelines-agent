@@ -166,15 +166,14 @@ jobs:
 
   # Run l0 tests
   - ${{ if parameters.unitTests }}:
-    - ${{ if and(eq(parameters.os, 'win'), eq(parameters.arch, 'x86')) }}:
-      - task: UseDotNet@2
-        displayName: Install .NET Core 6 Runtime
-        inputs:
-          version: '6.0.x'
-          packageType: 'runtime'
-          installationPath: 'C:\Program Files (x86)\dotnet'
-        env:
-          PROCESSOR_ARCHITECTURE: x86
+    - task: UseDotNet@2
+      displayName: Install .NET Core 6 Runtime
+      inputs:
+        version: '6.0.x'
+        packageType: 'runtime'
+        installationPath: 'C:\Program Files (x86)\dotnet'
+      env:
+        PROCESSOR_ARCHITECTURE: x86
     - script: ${{ variables.devCommand }} testl0 Debug ${{ parameters.os }}-${{ parameters.arch }}
       workingDirectory: src
       displayName: Unit tests
@@ -182,13 +181,12 @@ jobs:
 
   # Run l1 tests
   - ${{ if parameters.functionalTests }}:
-    - ${{ if and(eq(parameters.os, 'win'), eq(parameters.arch, 'x86')) }}:
-      - task: UseDotNet@2
-        displayName: Install .NET Core 6 SDK
-        inputs:
-          version: '6.0.424'
-          packageType: sdk
-          performMultiLevelLookup: true
+    - task: UseDotNet@2
+      displayName: Install .NET Core 6 SDK
+      inputs:
+        version: '6.0.424'
+        packageType: sdk
+        performMultiLevelLookup: true
     - script: ${{ variables.devCommand }} testl1 Debug ${{ parameters.os }}-${{ parameters.arch }}
       workingDirectory: src
       displayName: Functional tests

@@ -95,7 +95,7 @@
   </Target>
 
   <Target Name="TestL0" DependsOnTargets="GenerateConstant">
-    <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime)" ConsoleToMSBuild="true" />
+    <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false" ConsoleToMSBuild="true" />
     <Exec Command="dotnet build Test/Test.csproj /t:CopyFilesL0" Condition="'$(PackageRuntime)' == 'win-x86'"/>
     <Exec Command="dotnet test Test/Test.csproj --settings $(MSBuildProjectDirectory)/Test/CodeCoverage.runsettings --no-build --logger:trx --collect:&quot;Code Coverage&quot; --filter &quot;$(TestFilters)&quot; /p:PackageRuntime=$(PackageRuntime)" ConsoleToMSBuild="true" />
   </Target>
@@ -107,8 +107,8 @@
     <Copy SourceFiles="@(LayoutBinFiles)"  DestinationFolder="$(L1Root)/net8/bin/%(RecursiveDir)"/>
     <Copy SourceFiles="@(L1Tasks)" DestinationFolder="$(L1Root)/net8/bin/L1/Tasks/%(RecursiveDir)"/>
 
-    <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=true -o $(L1Root)/net6/bin -f net6.0" ConsoleToMSBuild="true" />
-    <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=true -o $(L1Root)/net8/bin -f net8.0" ConsoleToMSBuild="true" />
+    <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false -o $(L1Root)/net6/bin -f net6.0" ConsoleToMSBuild="true" />
+    <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false -o $(L1Root)/net8/bin -f net8.0" ConsoleToMSBuild="true" />
 
     <Exec Command="dotnet build Test/Test.csproj /t:CopyFilesL1" Condition="'$(PackageRuntime)' == 'win-x86'"/>
 

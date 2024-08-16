@@ -383,11 +383,6 @@ if [[ "$CURRENT_PLATFORM" == 'windows' ]]; then
     export DesktopMSBuild="$msbuild_location"
 fi
 
-if [[ ("$RUNTIME_ID" == 'linux-musl-x64') || ("$RUNTIME_ID" == 'linux-musl-arm64') ]]; then
-    echo "Installing musl.."
-    apk add musl
-fi
-
 case $DEV_CMD in
    "build") cmd_build;;
    "b") cmd_build;;

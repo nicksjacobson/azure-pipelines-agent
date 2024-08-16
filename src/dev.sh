@@ -21,8 +21,8 @@ source "$SCRIPT_DIR/.helpers.sh"
 
 REPO_ROOT="${SCRIPT_DIR}/.."
 DOTNETSDK_ROOT="${REPO_ROOT}/_dotnetsdk"
-DOTNETSDK_VERSION="8.0.400"
-DOTNETSDK_INSTALLDIR="$DOTNETSDK_ROOT/$DOTNETSDK_VERSION"
+DOTNETSDK6_VERSION="6.0.424"
+DOTNETSDK8_VERSION="8.0.401"
 AGENT_VERSION=$(cat "$SCRIPT_DIR/agentversion" | head -n 1 | tr -d "\n\r")
 
 DOTNET_ERROR_PREFIX="##vso[task.logissue type=error]"
@@ -40,6 +40,46 @@ BUILD_CONFIG="Debug"
 if [[ "$DEV_CONFIG" == "Release" ]]; then
     BUILD_CONFIG="Release"
 fi
+
+function install_dotnet_sdk()
+{
+    DOTNETSDK_VERSION=$1 
+
+    if [[ (! -d "${DOTNETSDK_ROOT}") || (! -e "${DOTNETSDK_ROOT}/.${DOTNETSDK_VERSION}") || (! -e "${DOTNETSDK_ROOT}/dotnet") ]]; then
+
+        # _dotnetsdk
+        #           \1.0.x
+        #                            \dotnet
+        #                            \.1.0.x
+        echo "Download dotnetsdk ${DOTNETSDK_VERSION} into ${DOTNETSDK_ROOT}"
+
+        # run dotnet-install.ps1 on windows, dotnet-install.sh on linux
+        if [[ "${CURRENT_PLATFORM}" == "windows" ]]; then
+            ext="ps1"
+        else
+            ext="sh"
+        fi
+
+        DOTNET_INSTALL_SCRIPT_NAME="dotnet-install.${ext}"
+        DOTNET_INSTALL_SCRIPT_PATH="./Misc/${DOTNET_INSTALL_SCRIPT_NAME}"
+
+        if [[ ! -e "${DOTNET_INSTALL_SCRIPT_PATH}" ]]; then
+            curl -sSL "https://dot.net/v1/${DOTNET_INSTALL_SCRIPT_NAME}" -o "${DOTNET_INSTALL_SCRIPT_PATH}"
+        fi
+
+        if [[ "${CURRENT_PLATFORM}" == "windows" ]]; then
+            echo "Convert ${DOTNETSDK_ROOT} to Windows style path"
+            sdkinstallwindow_path=${DOTNETSDK_ROOT:1}
+            sdkinstallwindow_path=${sdkinstallwindow_path:0:1}:${sdkinstallwindow_path:1}
+            architecture=$( echo $RUNTIME_ID | cut -d "-" -f2)
+            powershell -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command "& \"${DOTNET_INSTALL_SCRIPT_PATH}\" -Version ${DOTNETSDK_VERSION} -InstallDir \"${sdkinstallwindow_path}\" -Architecture ${architecture}  -NoPath; exit \$LastExitCode;" || checkRC "${DOTNET_INSTALL_SCRIPT_NAME}"
+        else
+            bash "${DOTNET_INSTALL_SCRIPT_PATH}" --version ${DOTNETSDK_VERSION} --install-dir "${DOTNETSDK_ROOT}" --no-path || checkRC "${DOTNET_INSTALL_SCRIPT_NAME}"
+        fi
+
+        echo "${DOTNETSDK_VERSION}" > "${DOTNETSDK_ROOT}/.${DOTNETSDK_VERSION}"
+    fi
+}
 
 function detect_platform_and_runtime_id ()
 {
@@ -326,44 +366,12 @@ DOWNLOAD_DIR="${REPO_ROOT}/_downloads/${RUNTIME_ID}/netcore2x"
 PACKAGE_DIR="${REPO_ROOT}/_package/${RUNTIME_ID}"
 REPORT_DIR="${REPO_ROOT}/_reports/${RUNTIME_ID}"
 
-if [[ (! -d "${DOTNETSDK_INSTALLDIR}") || (! -e "${DOTNETSDK_INSTALLDIR}/.${DOTNETSDK_VERSION}") || (! -e "${DOTNETSDK_INSTALLDIR}/dotnet") ]]; then
+# Download dotnet SDK to ../_dotnetsdk directory
+heading "Install .NET SDK"
+rm -Rf "${DOTNETSDK_ROOT}"
 
-    # Download dotnet SDK to ../_dotnetsdk directory
-    heading "Install .NET SDK"
-
-    # _dotnetsdk
-    #           \1.0.x
-    #                            \dotnet
-    #                            \.1.0.x
-    echo "Download dotnetsdk into ${DOTNETSDK_INSTALLDIR}"
-    rm -Rf "${DOTNETSDK_DIR}"
-
-    # run dotnet-install.ps1 on windows, dotnet-install.sh on linux
-    if [[ "${CURRENT_PLATFORM}" == "windows" ]]; then
-        ext="ps1"
-    else
-        ext="sh"
-    fi
-
-    DOTNET_INSTALL_SCRIPT_NAME="dotnet-install.${ext}"
-    DOTNET_INSTALL_SCRIPT_PATH="./Misc/${DOTNET_INSTALL_SCRIPT_NAME}"
-
-    if [[ ! -e "${DOTNET_INSTALL_SCRIPT_PATH}" ]]; then
-        curl -sSL "https://dot.net/v1/${DOTNET_INSTALL_SCRIPT_NAME}" -o "${DOTNET_INSTALL_SCRIPT_PATH}"
-    fi
-
-    if [[ "${CURRENT_PLATFORM}" == "windows" ]]; then
-        echo "Convert ${DOTNETSDK_INSTALLDIR} to Windows style path"
-        sdkinstallwindow_path=${DOTNETSDK_INSTALLDIR:1}
-        sdkinstallwindow_path=${sdkinstallwindow_path:0:1}:${sdkinstallwindow_path:1}
-        architecture=$( echo $RUNTIME_ID | cut -d "-" -f2)
-        powershell -NoLogo -Sta -NoProfile -NonInteractive -ExecutionPolicy Unrestricted -Command "& \"${DOTNET_INSTALL_SCRIPT_PATH}\" -Version ${DOTNETSDK_VERSION} -InstallDir \"${sdkinstallwindow_path}\" -Architecture ${architecture}  -NoPath; exit \$LastExitCode;" || checkRC "${DOTNET_INSTALL_SCRIPT_NAME}"
-    else
-        bash "${DOTNET_INSTALL_SCRIPT_PATH}" --version ${DOTNETSDK_VERSION} --install-dir "${DOTNETSDK_INSTALLDIR}" --no-path || checkRC "${DOTNET_INSTALL_SCRIPT_NAME}"
-    fi
-
-    echo "${DOTNETSDK_VERSION}" > "${DOTNETSDK_INSTALLDIR}/.${DOTNETSDK_VERSION}"
-fi
+install_dotnet_sdk $DOTNETSDK6_VERSION
+install_dotnet_sdk $DOTNETSDK8_VERSION
 
 heading ".NET SDK to path"
 

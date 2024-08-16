@@ -107,8 +107,6 @@
     <Copy SourceFiles="@(LayoutBinFiles)"  DestinationFolder="$(L1Root)/net8/bin/%(RecursiveDir)"/>
     <Copy SourceFiles="@(L1Tasks)" DestinationFolder="$(L1Root)/net8/bin/L1/Tasks/%(RecursiveDir)"/>
 
-    <Exec Command="apk add musl" Condition="'$(PackageRuntime)' == 'linux-musl-x64' Or $(PackageRuntime)' == 'linux-musl-arm64'" ConsoleToMSBuild="true"/>
-
     <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=true -o $(L1Root)/net6/bin -f net6.0" ConsoleToMSBuild="true" />
     <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=true -o $(L1Root)/net8/bin -f net8.0" ConsoleToMSBuild="true" />
 

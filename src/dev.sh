@@ -367,6 +367,15 @@ fi
 
 heading ".NET SDK to path"
 
+echo "Adding .NET to PATH (${DOTNETSDK_INSTALLDIR})"
+export PATH=${DOTNETSDK_INSTALLDIR}:$PATH
+echo "Path = $PATH"
+echo ".NET Version = $(dotnet --version)"
+
+heading "Pre-caching external resources for $RUNTIME_ID"
+mkdir -p "${LAYOUT_DIR}" >/dev/null
+bash ./Misc/externals.sh $RUNTIME_ID "Pre-Cache" || checkRC "externals.sh Pre-Cache"
+
 if [[ "$CURRENT_PLATFORM" == 'windows' ]]; then
     vswhere=$(find "$DOWNLOAD_DIR" -name vswhere.exe | head -1)
     vs_location=$("$vswhere" -latest -property installationPath)

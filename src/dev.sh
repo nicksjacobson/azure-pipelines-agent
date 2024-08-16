@@ -385,7 +385,7 @@ fi
 
 if [[ ("$RUNTIME_ID" == 'linux-musl-x64') || ("$RUNTIME_ID" == 'linux-musl-arm64') ]]; then
     echo "Installing musl.."
-    bash "apk add musl"
+    apk add musl
 fi
 
 case $DEV_CMD in

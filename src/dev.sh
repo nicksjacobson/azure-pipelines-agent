@@ -375,8 +375,8 @@ install_dotnet_sdk $DOTNETSDK8_VERSION
 
 heading ".NET SDK to path"
 
-echo "Adding .NET to PATH (${DOTNETSDK_INSTALLDIR})"
-export PATH=${DOTNETSDK_INSTALLDIR}:$PATH
+echo "Adding .NET to PATH (${DOTNETSDK_ROOT)"
+export PATH=${DOTNETSDK_ROOT}:$PATH
 echo "Path = $PATH"
 echo ".NET Version = $(dotnet --version)"
 

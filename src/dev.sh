@@ -368,7 +368,6 @@ REPORT_DIR="${REPO_ROOT}/_reports/${RUNTIME_ID}"
 
 # Download dotnet SDK to ../_dotnetsdk directory
 heading "Install .NET SDK"
-rm -Rf "${DOTNETSDK_INSTALLDIR}"
 
 install_dotnet_sdk $DOTNETSDK6_VERSION
 install_dotnet_sdk $DOTNETSDK8_VERSION

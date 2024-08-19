@@ -107,6 +107,26 @@
     <Copy SourceFiles="@(LayoutBinFiles)"  DestinationFolder="$(L1Root)/net8/bin/%(RecursiveDir)"/>
     <Copy SourceFiles="@(L1Tasks)" DestinationFolder="$(L1Root)/net8/bin/L1/Tasks/%(RecursiveDir)"/>
 
+    <MSBuild Targets="Restore"
+             BuildInParallel="false"
+             Projects="@(ProjectFiles)"
+             SkipNonExistentProjects="false"
+             StopOnFirstFailure="true" />
+
+    <MSBuild Targets="Publish"
+             BuildInParallel="false"
+             Projects="@(ProjectFiles)"
+             SkipNonExistentProjects="false"
+             StopOnFirstFailure="true"
+             Properties="Configuration=$(BUILDCONFIG);PackageRuntime=$(PackageRuntime);Version=1.0.0.0;RuntimeIdentifier=$(PackageRuntime);PublishDir=$(L1Root)/net6/bin;TargetFramework=net6.0" />
+
+    <MSBuild Targets="Publish"
+             BuildInParallel="false"
+             Projects="@(ProjectFiles)"
+             SkipNonExistentProjects="false"
+             StopOnFirstFailure="true"
+             Properties="Configuration=$(BUILDCONFIG);PackageRuntime=$(PackageRuntime);Version=1.0.0.0;RuntimeIdentifier=$(PackageRuntime);PublishDir=$(L1Root)/net8/bin;TargetFramework=net8.0" />
+
     <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false -o $(L1Root)/net6/bin -f net6.0" ConsoleToMSBuild="true" />
     <Exec Command="dotnet build Test/Test.csproj -c $(BUILDCONFIG) /p:PackageRuntime=$(PackageRuntime) /p:SelfContained=false -o $(L1Root)/net8/bin -f net8.0" ConsoleToMSBuild="true" />
 

@@ -6,7 +6,6 @@
     <ProjectReference Include="..\Agent.Worker\Agent.Worker.csproj" />
     <ProjectReference Include="..\Agent.Plugins\Agent.Plugins.csproj" />
     <ProjectReference Include="..\Agent.Sdk\Agent.Sdk.csproj" />
-    <ProjectReference Include="..\Agent.PluginHost/Agent.PluginHost.csproj" />
   </ItemGroup>
 
   <PropertyGroup>

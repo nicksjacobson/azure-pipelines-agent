@@ -1,3 +1,24 @@
+## Features
+ - Show warnings for Agents that run on OS versions not supported by .NET 8 (#4885)
+ - Improve CPU resource monitor for Linux systems (#4888)
+ - Enable stream and file logs output (#4920)
+ - Bring back debugging capabilities on the agent (#4926)
+ - Add package type info to telemetry messages (#4930)
+
+## Bugs
+ - Support for PowerShell CLM (#4923)
+ - Add handling of timeout exceptions for FF provider (#4928)
+
+## Misc
+ - Test branch cleanup for release pipeline (#4894)
+ - Remove `AZP_AGENT_MOUNT_WORKSPACE` knob (#4906)
+ - Localization update (#4909)
+ - Update dotnet sdk to v6.0.424/runtime to v6.0.32 (#4912)
+ - Use the latest version of `Azure.Core` (#4921)
+ - Add PipelineFeatureSource CheckIfTaskNodeRunnerIsDeprecated (#4924)
+ - Fix for release pipeline (#4925)
+ - Use `node20_1` for `sleepCommand` when running container (#4929)
+
 
 ## Agent Downloads
 
